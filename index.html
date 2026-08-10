@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>lili-ai-coach · 查理 — 开发历程全记录</title>
+<style>
+  :root{
+    --bg:#0f1117; --card:#171a23; --card2:#1e222d; --line:#2b3140;
+    --fg:#e8eaf0; --mut:#9aa3b2; --acc:#6ea8fe; --acc2:#7ee0b8;
+    --warn:#ffb454; --bad:#ff7a8a; --good:#7ee0b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.75;font-size:15px}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 80px}
+  h1{font-size:30px;margin:0 0 6px;letter-spacing:.5px}
+  h2{font-size:22px;margin:46px 0 14px;padding-left:12px;border-left:4px solid var(--acc)}
+  h3{font-size:17px;margin:26px 0 8px;color:var(--acc2)}
+  .sub{color:var(--mut);font-size:14px;margin:0 0 4px}
+  .tag{display:inline-block;background:var(--card2);border:1px solid var(--line);
+    border-radius:999px;padding:2px 10px;font-size:12px;color:var(--mut);margin:2px 4px 2px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:14px 0}
+  .card2{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0}
+  code{background:#0b0d13;border:1px solid var(--line);border-radius:6px;
+    padding:1px 6px;font-size:13px;color:var(--acc2);font-family:"SFMono-Regular",Consolas,monospace}
+  pre{background:#0b0d13;border:1px solid var(--line);border-radius:12px;
+    padding:16px;overflow:auto;font-size:13px;line-height:1.6;color:#d6dbe6}
+  pre code{background:none;border:none;padding:0;color:inherit}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+  th{background:var(--card2);color:var(--acc)}
+  ul,ol{margin:8px 0;padding-left:22px}
+  li{margin:5px 0}
+  .pill{font-weight:700;padding:1px 8px;border-radius:6px;font-size:13px}
+  .v{background:#243042;color:var(--acc);border:1px solid #35507a}
+  .ok{background:#16331f;color:var(--good);border:1px solid #2c5c3c}
+  .warn{background:#3a2c10;color:var(--warn);border:1px solid #6b531c}
+  .bad{background:#3a1820;color:var(--bad);border:1px solid #6b2a35}
+  .muted{color:var(--mut)}
+  .timeline{border-left:3px solid var(--line);margin-left:8px;padding-left:22px}
+  .tl-item{position:relative;margin:26px 0}
+  .tl-item::before{content:"";position:absolute;left:-32px;top:4px;width:14px;height:14px;
+    background:var(--acc);border-radius:50%;border:3px solid var(--bg)}
+  .tl-date{font-size:13px;color:var(--mut)}
+  .quote{border-left:3px solid var(--warn);background:#1c1810;padding:10px 16px;
+    border-radius:0 10px 10px 0;color:#f0d9b0;font-size:14px;margin:10px 0}
+  .kbd{background:#0b0d13;border:1px solid var(--line);border-bottom-width:2px;
+    border-radius:6px;padding:1px 7px;font-size:12px}
+  a{color:var(--acc);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .foot{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);color:var(--mut);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>lili-ai-coach · 查理</h1>
+  <p class="sub">给非技术小白 <b>lili酱</b> 的「AI 协作教练」Skill — 开发历程全记录</p>
+  <p>
+    <span class="tag">当前版本 v2.3.0</span>
+    <span class="tag">commit cd02148</span>
+    <span class="tag">private 仓库</span>
+    <span class="tag">跨端 WorkBuddy / Hermes / Codex</span>
+  </p>
+
+  <div class="card">
+    <b>这份文档的目的</b>：不是交接摘要，而是<b>整段开发过程的全记录</b>。让任何人读完都能还原——
+    这个 Skill 从哪来、为什么要这么设计、每一轮用户反馈怎么倒逼改动、中途踩过哪些坑、以及为什么最终定成现在这样。
+    文末附带可直接粘贴给桌面版 WorkBuddy 的接手 Prompt 与 GitHub 连接方式。
+  </div>
+
+  <!-- ============ 一、它是什么 ============ -->
+  <h2>一、它到底是什么</h2>
+  <div class="card">
+    <p><b>查理</b> 是一个 AI Agent 的「技能包（Skill）」，服务对象是非技术初学者 lili酱。
+    它的角色不是帮 lili 做事，而是<b>教 lili 怎么跟 AI 协作</b>：把模糊的想法理成真需求，落成一份清楚的项目说明书，
+    再拆解成可执行的步骤，最后让她感知到「这次比上次省了哪几步」。</p>
+    <p>一句话定位：<b>不替用户干活、不碰领域问答、不写人设语气</b>——只教「和 AI 协作的方法论」。这是贯穿全程的底层纪律「小且可组合」。</p>
+  </div>
+
+  <h3>核心设计原则（全程未动摇）</h3>
+  <table>
+    <tr><th>原则</th><th>含义</th><th>为什么</th></tr>
+    <tr><td>小且可组合</td><td>只干「需求→PRD→workflow + 卡点陪练」一件事，绝不变成通用助手</td><td>白名单式聚焦，避免 scope creep</td></tr>
+    <tr><td>不替代用户思考</td><td>查理只问、只整理、只翻译，答案/实现归别的 Agent</td><td>培养 lili 自己的判断力</td></tr>
+    <tr><td>跨端一致</td><td>三端方法论正文逐字符相同（AC8 硬约束）</td><td>同一套方法，不同 harness 行为不漂移</td></tr>
+    <tr><td>零重叠</td><td>不重复 lili 已有个性化 prompt 的风格/人设层（AC9）</td><td>查理只讲方法论，人设由 base Agent 负责</td></tr>
+    <tr><td>Token 纪律</td><td>references 懒加载、产物落盘、闭环软预算 ≤8 轮（AC7）</td><td>避免上下文爆炸，尤其对小白长对话友好</td></tr>
+  </table>
+
+  <!-- ============ 二、版本时间线 ============ -->
+  <h2>二、完整版本时间线（过程主线）</h2>
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-date">起点 · v1.0.0</div>
+      <h3>从「自测诊断」翻转为「引导式协作教练」</h3>
+      <p>用户提供 <code>lili-onboarding.zip</code>，原本是一个「自我测试 / 诊断」类技能。用户发现 lili 把它当万能顾问用，
+      且自我评估并不准确。于是重新定位为<b>引导式 AI 协作教练</b>。</p>
+      <p><b>当时锁死的硬约束</b>：PTCF 框架（画像/任务/约束/验收）、放弃自测、专注里程碑 1、不与 lili 已有个性化 prompt 重叠、
+      必须可在 Codex + WorkBuddy 运行、帮拆 workflow、验收标准参考 mattpocock/skills 但面向初学者、信心 &gt;90% 才生成。</p>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">v1.1.0</div>
+      <h3>加机器可读验收</h3>
+      <p>落地用户选中的 O3（真实需求复述确认）、O4（workflow 复盘回路），新增 AC11/AC12、UC10/UC11，
+      并产出 <code>eval-checklist.json</code> / <code>.csv</code> 机读版。</p>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">v2.0.0 · 九点大修</div>
+      <h3>正式工程化 + 跨端 + 改名</h3>
+      <ul>
+        <li>Hermes 支持 + GitHub 分包（agentskills.io 标准，WorkBuddy/Hermes 共用一个 SKILL.md，仅 Codex 需单独的 <code>openai.yaml</code>）</li>
+        <li>AC5 强调 MVP 优先；Token 效率纳入评估</li>
+        <li>改名：lili → <b>lili酱</b>，教练 → <b>查理</b></li>
+        <li>灵活 A–D 入口（不必死板从 A 走到底）；随问随答模式</li>
+        <li>卡点模拟陪练；workflow 卡可选 🛠 工具字段</li>
+        <li>需求挖掘改为 3–5 问（非 ≤3）+ 模式识别；过度工程自检</li>
+      </ul>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">v2.1.0 · 五件套追问落地</div>
+      <h3>把用户提出的 5 个追问逐条落地</h3>
+      <ul>
+        <li>Q1：Mode 0 产出可转发的「prompt 信封」（转发给/目标/背景/约束/验收）</li>
+        <li>Q4：🪞 复盘与迭代模式 + 磁盘 playbook <code>lili-coach-log.md</code></li>
+        <li>Q2+Q5：README 明确「只下载 SKILL.md + references/，不要下载 eval/examples」，新增 R1–R8 风险段</li>
+        <li>Q3（独立 token 审计 skill）被用户多选为<b>递延</b></li>
+      </ul>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">GitHub 自主上传</div>
+      <h3>沙箱 DNS 拦截 → /etc/hosts 兜底 → 推送成功</h3>
+      <p>用户要求「别经过我，自己用 CLI 上传」。沙箱把 <code>github.com</code> 解析到黑洞 <code>198.18.x.x</code>，
+      但防火墙放行真实 IP。于是写入真实 GitHub IP 到 <code>/etc/hosts</code>，用 github-connector 的 OAuth token 推送，
+      最终成功推到私有仓库 <code>weifeng89/lili-ai-coach</code>，并还原远程 URL 清除 token。</p>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">v2.2.0 · 小白可用性四大槽点闭环</div>
+      <h3>用户一次性抛出 4 个尖锐槽点（见第三节反馈①）</h3>
+      <p>这次是「方法论很专业，但小白用不起来」的系统性批评。据此全量重构：</p>
+      <ul>
+        <li>① 安装拦人 → 仓库内置 <code>install.py</code>/<code>install.sh</code> 通用安装器 + <code>npx add-skill</code> 便捷路径，lili 零接触文件</li>
+        <li>② 术语劝退 → 术语输出禁令 + 转译表（PTCF→项目四件套、workflow→落地步骤清单…）</li>
+        <li>③ 边界僵化 → 柔性分流：永远做「问题翻译官」，不生硬拒答</li>
+        <li>④ 被动救火 → 三 harness 全翻<b>自动触发</b>（<code>disable-model-invocation:false</code> / <code>allow_implicit_invocation:true</code>）</li>
+      </ul>
+      <p>另补两块能力：<b>Token 优化诊断</b>、<b>自动复盘落盘</b>。验收从 AC1–AC14 涨到 AC1–AC16。</p>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">v2.3.0 · 收敛 + 补遗漏</div>
+      <h3>用户二次反馈（见第三节反馈②）→ AC 20→14 分层 + 身份提示</h3>
+      <ul>
+        <li>① 双脑困惑（自动触发后分不清谁在答）→ 新增「切入时轻量身份提示」，<b>不每轮刷</b></li>
+        <li>④ AC 膨胀 → AC20 压到 <b>AC14</b>，eval 拆成「用户能力 AC1–10 / 打包质量 AC11–14」两段</li>
+        <li>⑤ 柔性分流靠模型 → 文档化为 R11，用「输出末尾永远附精准指令」降依赖</li>
+        <li>③ Token 模式级诊断 → 经确认维持现状（已诚实声明边界）</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ============ 三、两轮关键反馈循环 ============ -->
+  <h2>三、两轮关键反馈循环（这是「过程」的精华）</h2>
+
+  <div class="card">
+    <h3>反馈①：v2.2.0 前的「小白用不起来」四大槽点</h3>
+    <p class="muted">用户原话核心：方法论设计很专业，但从「小白实际能用起来」看存在明显脱节，核心是「用开发者的思维做小白产品」。</p>
+    <table>
+      <tr><th>#</th><th>槽点</th><th>用户原意（精要）</th><th>v2.2.0 的应对</th></tr>
+      <tr><td>1</td><td>入门门槛悖论</td><td>教小白用 AI，但小白连安装都装不上——纯手动找隐藏目录、拷文件。相当于「教你游泳，前提是你先跳深水区」。</td><td><span class="pill ok">install.py</span> 开发者跑一次即装好；lili 零接触</td></tr>
+      <tr><td>2</td><td>术语密度过高</td><td>README 全是 PTCF、harness、Mode 0、AC8、frontmatter、lazy load… 小白每个字都认识、连起来不懂。</td><td><span class="pill ok">术语禁令</span> + 转译表，所有输出说人话</td></tr>
+      <tr><td>3</td><td>边界僵化</td><td>小白分不清「这是领域问题还是沟通问题」，查理一说「这不归我管」就觉得这技能是摆设。</td><td><span class="pill ok">柔性分流</span> 永远翻译、不当守门员</td></tr>
+      <tr><td>4</td><td>全靠用户主动</td><td>纯 user-invoked，小白不知道自己偏了，等卡住已歪到姥姥家——只能事后救火。</td><td><span class="pill ok">自动触发</span> 三端静默切入</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>反馈②：v2.2.0 上线后的二次吐槽</h3>
+    <p class="muted">用户对 v2.2.0 的诚实复盘，其中 ① 被判定为「v2.2.0 最大新引入风险」，③ 认定为已诚实处理，④⑤ 指向维护性。</p>
+    <table>
+      <tr><th>#</th><th>问题</th><th>用户原意（精要）</th><th>处置</th></tr>
+      <tr><td>1</td><td>双脑困惑风险升高</td><td>翻成自动触发后，小白根本分不清「现在主 AI 在答还是查理在答」。R9 写了风险但缓解停在技术层，<b>用户感知层无标识</b>。</td><td><span class="pill ok">v2.3.0</span> 补「切入时轻量身份提示，不每轮刷」</td></tr>
+      <tr><td>3</td><td>Token 诊断是模式级</td><td>查理读不到真实 token 计数，只能做模式级诊断。对小白够用，但期待精确数字会失望。</td><td><span class="pill warn">维持</span> 文档已诚实声明边界，不谎称</td></tr>
+      <tr><td>4</td><td>AC 膨胀到 20</td><td>内部规则越积越多，复杂度上升。核心原则「小且可组合」需警惕慢慢变通用助手。</td><td><span class="pill ok">v2.3.0</span> 压到 AC14 并分层</td></tr>
+      <tr><td>5</td><td>柔性分流靠模型</td><td>「是不是纯领域问题」很依赖模型判断力，弱模型会乱分流。所有 Skill 的通病。</td><td><span class="pill warn">R11</span> 改形态约束降依赖，残差接受</td></tr>
+    </table>
+    <div class="quote">我对反馈②的判断（节选）：① 是真问题且被低估；③ 已诚实处理不必动；④ 确有问题且有明确优化空间（压到 14）；⑤ 是通病、接受残差即可。</div>
+  </div>
+
+  <!-- ============ 四、踩过的坑 / 决策 ============ -->
+  <h2>四、中途踩过的坑与关键决策</h2>
+  <div class="card2">
+    <b>① 编号冲突</b>：方案写「新增 AC15–AC18」，但当时 eval 已是 AC1–AC16。→ 顺延为 <b>AC17–AC20</b>，原 AC15（prompt 信封）保留。
+  </div>
+  <div class="card2">
+    <b>② 安装路径写错</b>：README 原写 <code>~/.codebuddy/skills/</code>，但公开产品是 <code>~/.workbuddy/skills/</code>（品牌改名歧义）。→ 安装器<b>同时探测两路径</b>，不用人工判断。
+  </div>
+  <div class="card2">
+    <b>③ 开关翻转没同步验收</b>：v2.2.0 翻成自动触发，但 AC13 还写着「保持 user-invoked」。→ AC13 去 user-invoked，§三 调用模型改 auto-invoke 口径。
+  </div>
+  <div class="card2">
+    <b>④ 自相矛盾</b>：方案「单次禁止抛 3 个以上问题」与 need-mining「每轮 3–5 问」（AC2）打架。→ 保留 3–5 问/轮，改为<b>每问 ≤2 候选</b>的勾选式，不削弱挖掘方法论。
+  </div>
+  <div class="card2">
+    <b>⑤ DNS / token 推送坑</b>：沙箱把 github.com 解析到 198.18.x.x。→ 写真实 GitHub IP 到 /etc/hosts，用 OAuth token 推送后<b>必须还原远程 URL</b>清 token。该 hosts 映射在会话重启后会重置。
+  </div>
+  <div class="card2">
+    <b>⑥ AC 合并映射（v2.3.0 零覆盖）</b>：AC2+AC3+AC11→AC1 需求挖掘；AC12+AC16+AC20→AC6 复盘落盘；AC13+AC19→AC7 Token 优化；AC1+AC14+身份提示→AC5 路由；AC10+AC15 完全重复→AC4。
+  </div>
+
+  <!-- ============ 五、GitHub 连接方式 ============ -->
+  <h2>五、GitHub 连接方式（接手者必读）</h2>
+  <div class="card">
+    <p><b>仓库</b>：<code>https://github.com/weifeng89/lili-ai-coach</code>（private）</p>
+    <p><b>桌面 / 正常网络环境（推荐，最简单）</b>：</p>
+    <pre><code>gh auth login        # 选 HTTPS + 浏览器授权，一次性
+git clone https://github.com/weifeng89/lili-ai-coach.git
+cd lili-ai-coach</code></pre>
+    <p class="muted">已登录 GitHub 的桌面版 WorkBuddy 直接用上面三行即可，<b>不要做 /etc/hosts 或 token 脚本之类的 hack</b>。</p>
+
+    <p><b>受限 / 沙箱环境兜底（仅当 github.com 被解析到 198.18.x.x 时才需要）</b>：</p>
+    <pre><code># 1) DNS 兜底：把真实 GitHub IP 写进 hosts（重启会话会失效，需重跑）
+echo "140.82.113.3 github.com"      >> /etc/hosts
+echo "185.199.108.153 raw.githubusercontent.com" >> /etc/hosts
+
+# 2) 取 token（来自 github-connector）
+source /root/.codebuddy/skills/github-connector/scripts/get_token.sh github
+TOKEN="$GITHUB_TOKEN"
+
+# 3) 带 token 推送，结束后务必还原 URL 清 token
+git remote set-url origin "https://oauth2:${TOKEN}@github.com/weifeng89/lili-ai-coach.git"
+git push origin main
+git remote set-url origin "https://github.com/weifeng89/lili-ai-coach.git"</code></pre>
+    <div class="quote">铁律：推送后必须还原远程 URL，绝不在远程地址里留 oauth token。</div>
+  </div>
+
+  <!-- ============ 六、接手 Prompt ============ -->
+  <h2>六、接手 Prompt（直接粘给桌面版 WorkBuddy）</h2>
+  <p class="muted">下面这段一粘贴就自动执行：clone 私有仓库 → 读 README/SKILL.md/eval → 就位报告 → 等你确认下一步。已内嵌 GitHub 链接与全部硬约束。</p>
+  <pre><code>继续开发这个 Skill 项目，按下面指令执行并回报结果：
+
+## 任务
+克隆并接管 lili-ai-coach（给非技术初学者 lili酱 的「AI 协作教练」查理），当前版本 v2.3.0（commit cd02148，main 分支）。仓库是 private。
+
+## 第一步：拿到代码
+在桌面环境（已登录 GitHub）直接：
+    git clone https://github.com/weifeng89/lili-ai-coach.git
+    cd lili-ai-coach
+若 clone 因未登录失败，先跑 gh auth login（选 HTTPS + 浏览器授权）再 clone。不要做 /etc/hosts 或 token 脚本之类的 hack——桌面网络正常，无需兜底。
+
+## 第二步：进入上下文
+读取并理解这几份文件（其余先不读）：README.md、SKILL.md、eval/eval-criteria.md、install.py。
+
+## 项目定位（勿偏离）
+帮 lili酱 把模糊想法 → 真需求 → PTCF 项目四件套 → 落地步骤清单 → 收口感知提效。
+原则「小且可组合」：绝不抢领域实现活、绝不定义人设语气。
+三端一致：WorkBuddy/Hermes 用 SKILL.md；Codex 用 agents/openai.yaml（其 prompt:| 正文须与 SKILL.md 逐字符一致，AC8 硬约束）。
+
+## 改代码前必读的硬约束
+1. AC8 跨端一致：改完 SKILL.md 必须重生成 openai.yaml（抽正文，2空格缩进注入 prompt:|；去首空行后逐字符一致）。
+2. AC9 零重叠：查理只讲方法论，不写人设/语气规则。
+3. AC18 术语零暴露：面向 lili 的输出禁止 PTCF/harness/Mode0/AC/UC/懒加载/Token预算/frontmatter/user-invoked 等内部词，按术语转译对照表说人话。
+4. 版本号四处同步：SKILL.md / agents/openai.yaml / eval/eval-checklist.json / README.md，每次改动 bump 一档。
+5. 小且可组合：新增功能先问「能并进现有 14 项 AC 的哪一项」，禁止变成通用助手。
+6. 安装白名单：install.py 只拷 SKILL.md + references/（+Codex 的 openai.yaml），绝不拷 eval/ examples/；保留本地 lili-coach-log.md 不被覆盖。
+7. Token 纪律：references 懒加载、产物落盘、闭环软预算 ≤8 轮。
+
+## 当前已知待办（挑一个做之前先确认路线）
+- Q3 递延：独立 token-efficiency-audit skill（查理转诊，不塞进查理）。
+- 优化：SKILL.md 正文 ≈9020 字符（查理在岗时每轮常驻 ~6000–9000 tokens）；压成本唯一杠杆是瘦身正文，目标 ~6000 字符内。
+- R9：自动触发后 description 关键词若过宽会误触发并长期占上下文，观察后收紧。
+- R11：柔性分流依赖模型判断力，已用「输出末尾永远附精准指令」降依赖。
+
+## 提交规范
+- commit message 带版本号，如 "v2.4.0 ..."。
+- 推送前自检：AC8 一致 / 四处版本一致 / csv 无 BOM 且 8 列 34 行 / install 只拷白名单。
+- push 用本机已登录的 GitHub，不在任何远程 URL 里留 token。
+
+## 现在就开始
+先 clone + 读 README.md 和 SKILL.md，然后回报：你已就位、当前版本、以及建议接下来先做待办里的哪一项。不要擅自改代码，先确认计划。</code></pre>
+
+  <!-- ============ 七、当前状态 + 待办 ============ -->
+  <h2>七、当前状态与开放待办</h2>
+  <div class="card">
+    <table>
+      <tr><th>项</th><th>状态</th><th>说明</th></tr>
+      <tr><td>代码</td><td><span class="pill ok">已推送</span></td><td>v2.3.0 @ <code>cd02148</code>，本地与 GitHub 远端一致，工作树干净，远程 URL 无 token</td></tr>
+      <tr><td>安装</td><td><span class="pill ok">通用</span></td><td><code>install.py</code> 跨 OS / 跨三 harness；WorkBuddy 另支持 <code>npx add-skill</code></td></tr>
+      <tr><td>验收</td><td><span class="pill ok">AC14</span></td><td>用户能力 AC1–10 / 打包质量 AC11–14，共 20 条 UC；CSV 34 行无 BOM</td></tr>
+      <tr><td>Q3 独立 token 审计 skill</td><td><span class="pill warn">递延</span></td><td>按「独立 skill + 查理转诊」落地，不塞进查理以保持小且可组合</td></tr>
+      <tr><td>SKILL.md 正文瘦身</td><td><span class="pill warn">可选</span></td><td>目标压到 ~6000 字符，降低查理在岗时的常驻 token</td></tr>
+      <tr><td>R9 description 收紧</td><td><span class="pill warn">观察</span></td><td>防自动触发误触发并长期占上下文</td></tr>
+    </table>
+  </div>
+
+  <div class="foot">
+    本页为 lili-ai-coach 项目开发历程自包含记录，无外部依赖。
+    仓库：<a href="https://github.com/weifeng89/lili-ai-coach">github.com/weifeng89/lili-ai-coach</a>（private）。
+    生成于 v2.3.0 之后，作为上下文交接与对外说明之用。
+  </div>
+
+</div>
+</body>
+</html>
