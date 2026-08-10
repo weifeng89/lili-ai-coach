@@ -1,0 +1,29 @@
+type,id,title,detail,mattpocock,check,mapping,status
+AC,AC1,触发精准,仅在AI协作/需求模糊/写PRD/workflow设计/协作卡点答疑类触发；不对闲聊或纯已实现技术任务误触发,小且可组合,喂12条混合输入(含卡点疑问)，误触发率=0,SKILL.md description,pending
+AC,AC2,初学者友好挖掘,每轮3-5个问题，每个都带agent推荐选项；并用跨轮pattern识别真/伪需求；不要求lili酱自由写需求,小且可组合,抽一轮对话，数问题数3-5且每问有推荐；查pattern标伪需求,SKILL.md Phase A.1 / references/need-mining.md §6,pending
+AC,AC3,真伪需求,对lili酱提出的每个需求，至少1次「做到X解决什么」反向追问，并标真/伪/待验证,—,检查对话是否对每个W有追问记录,SKILL.md Phase A.3 / references/need-mining.md §3,pending
+AC,AC4,PTCF完整,产出PRD严格含P/T/C/F四段；完整度检查对空白段输出缺口，不编造,—,缺任一段时检查输出含缺口清单且无编造,SKILL.md Phase B / references/prd-template.md,pending
+AC,AC5,scope护栏+MVP,里程碑1锁定后拒绝开新分支/加功能；新点子/装饰进backlog；默认最小可跑版，减少lili酱决策分散,小且可组合,里程碑1中抛新功能/装饰，验证被接住进backlog且未展开,SKILL.md Phase D.2,pending
+AC,AC6,workflow显性化,必产1张卡，且显式标触发/步骤/决策/产出/回流(🛠工具字段可选),—,检查产出含五段结构标注,SKILL.md Phase C / references/workflow-card.md,pending
+AC,AC7,感知提效,收口引导lili酱说出「AI省了哪几步」并记录,—,检查收口轮有该提问+lili酱原话记录,SKILL.md Phase D.1,pending
+AC,AC8,跨harness一致,"同输入在Codex(openai.yaml)、WorkBuddy与Hermes(均读SKILL.md,agentskills.io)下结构/口径一致",版本同步,同输入跑三harness，diff方法论正文一致,SKILL.md == agents/openai.yaml,pending
+AC,AC9,零重叠,skill不重复个性化prompt的沟通风格规则；仅补方法论,文档中立,文本扫描确认无风格规则重复,SKILL.md 边界声明,pending
+AC,AC10,无外部依赖,不要求API key/翻墙/第三方；纯prompt+本地文件,小且可组合,检查无任何外部调用/密钥要求,全包,pending
+AC,AC11,真需求复述确认,标✅真需求（及⚠️伪需求对应真需求N）前，必须让lili酱用自己的话复述且一致才确认；不一致则退回,—,抽查：标✅前是否有lili酱复述且一致记录,SKILL.md Phase A.3 / references/need-mining.md §3.1,pending
+AC,AC12,workflow复盘闭环,提供轻量复盘、可改「别扭那一格」并写回卡片；且该动作不触发scope护栏,—,验证复盘动作存在且护栏未被误触发,SKILL.md Phase C/D / references/workflow-card.md §5.1,pending
+AC,AC13,Token效率纪律,正文含①压缩优先②懒加载references③产物落文件④软预算≤~8轮；且user-invoked,小且可组合,查SKILL.md四条齐备；UC14测闭环轮数达标,SKILL.md Token效率纪律段,pending
+AC,AC14,柔性入口,可按lili酱所处阶段进入A/B/C/D(如已有PRD直进C)，不必从A走到底；任意阶段可回头补,小且可组合,UC13验证从C进入且产出合规,SKILL.md 入口路由,pending
+UC,UC1,模糊想法→PRD,走挖掘→PTCF PRD(日语助手)→workflow→感知提效，全程不要求她写长文,—,我想做个练日语的东西,"AC2,3,4,6,7",pending
+UC,UC2,真伪识别,追问发现真需求是每日看学习时长→标⚠️伪需求+最小替代,—,我要个超酷数据大屏,AC3,pending
+UC,UC3,完整度拦截,输出缺口清单，要求补，不硬出最终版,—,PRD缺C(约束)/F(验收),AC4,pending
+UC,UC4,scope护栏,进backlog，不展开新分支,—,里程碑1进行中：顺便加个社区功能,AC5,pending
+UC,UC5,workflow拆解,把日语听写拆成触发→录音→AI纠错→高亮→复习，并指出「这就是workflow结构」,—,lili酱：workflow是啥？,AC6,pending
+UC,UC6,跨harness,三处产出结构/口径一致,—,同需求分别喂Codex/WorkBuddy/Hermes,AC8,pending
+UC,UC7,边界-只吐槽,进随问随答模式，引导说具体场景，不急着挖需求/评估,—,AI又笨了,AC1,pending
+UC,UC8,中断续接,从断点继续，不重来,—,lili酱中途离开→回来,—,pending
+UC,UC9,重叠校验,不含个性化prompt已有风格规则（仅引用其存在）,—,扫描skill全文,AC9,pending
+UC,UC10,复述确认防盲从,agent退回追问、不标✅，指出差异重新对齐,—,lili酱复述跑偏（如把看进度说成炫页面）,AC11,pending
+UC,UC11,复盘不触发护栏,改对应格写回卡片，未误触发scope护栏,—,里程碑1后lili酱：这格别扭想改,AC12,pending
+UC,UC12,随问随答卡点陪练,查理进随问随答：命名不清→定位→拟PTCF澄清问句→教套路；不强行走闭环,—,跟别的Agent聊卡住、输出不清、不知下一步,"AC1,AC13",pending
+UC,UC13,柔性入口(从C进),直接进Phase C产出workflow卡，未强制回A,—,PRD写好了，帮我拆workflow,AC14,pending
+UC,UC14,Token纪律验证,产物落文件、每轮有压缩回顾、references仅载当前页、总轮数≤~8,—,跑一次完整MVP闭环,AC13,pending
