@@ -13,6 +13,8 @@ AC,AC11,真需求复述确认,标✅真需求（及⚠️伪需求对应真需�
 AC,AC12,workflow复盘闭环,提供轻量复盘、可改「别扭那一格」并写回卡片；且该动作不触发scope护栏,—,验证复盘动作存在且护栏未被误触发,SKILL.md Phase C/D / references/workflow-card.md §5.1,pending
 AC,AC13,Token效率纪律,正文含①压缩优先②懒加载references③产物落文件④软预算≤~8轮；且user-invoked,小且可组合,查SKILL.md四条齐备；UC14测闭环轮数达标,SKILL.md Token效率纪律段,pending
 AC,AC14,柔性入口,可按lili酱所处阶段进入A/B/C/D(如已有PRD直进C)，不必从A走到底；任意阶段可回头补,小且可组合,UC13验证从C进入且产出合规,SKILL.md 入口路由,pending
+AC,AC15,prompt信封+Mode0定界,Mode0产出含转发给/目标/背景/约束/验收五段自包含prompt(PTCF递归)；且Mode0不接领域问答，领域澄清归base头脑风暴,小且可组合,UC15验证信封产出+领域问答被引导回base,SKILL.md 随问随答模式,pending
+AC,AC16,复盘迭代+token-efficient,复盘模式存在、不触发护栏；成长playbook为磁盘文件lili-coach-log.md，仅里程碑/compact/复盘时纳入；有~5次/~40行compact防膨胀,小且可组合,UC16验证复盘落文件+日志非每轮加载+护栏未误触发,SKILL.md 🪞复盘与迭代模式,pending
 UC,UC1,模糊想法→PRD,走挖掘→PTCF PRD(日语助手)→workflow→感知提效，全程不要求她写长文,—,我想做个练日语的东西,"AC2,3,4,6,7",pending
 UC,UC2,真伪识别,追问发现真需求是每日看学习时长→标⚠️伪需求+最小替代,—,我要个超酷数据大屏,AC3,pending
 UC,UC3,完整度拦截,输出缺口清单，要求补，不硬出最终版,—,PRD缺C(约束)/F(验收),AC4,pending
@@ -27,3 +29,5 @@ UC,UC11,复盘不触发护栏,改对应格写回卡片，未误触发scope护栏
 UC,UC12,随问随答卡点陪练,查理进随问随答：命名不清→定位→拟PTCF澄清问句→教套路；不强行走闭环,—,跟别的Agent聊卡住、输出不清、不知下一步,"AC1,AC13",pending
 UC,UC13,柔性入口(从C进),直接进Phase C产出workflow卡，未强制回A,—,PRD写好了，帮我拆workflow,AC14,pending
 UC,UC14,Token纪律验证,产物落文件、每轮有压缩回顾、references仅载当前页、总轮数≤~8,—,跑一次完整MVP闭环,AC13,pending
+UC,UC15,prompt信封,产出五段自包含prompt+转发说明；领域问题引导回base,—,跟某Agent卡住：帮我写段能发它的,AC15,pending
+UC,UC16,复盘不爆context,进复盘、三问、结论落lili-coach-log.md、未误触发护栏、日志未每轮内联,—,里程碑后：帮我想想这次顺不顺,"AC16,AC12",pending

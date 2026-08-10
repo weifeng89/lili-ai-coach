@@ -1,6 +1,6 @@
 {
   "skill": "lili-ai-coach",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "source": "eval/eval-criteria.md",
   "updated": "2026-08-10",
   "note": "本文件为 eval-criteria.md 的机读镜像。状态字段默认 pending，验收时改为 pass / fail / na。",
@@ -18,7 +18,9 @@
     {"id": "AC11", "标准": "真需求复述确认", "说明": "标✅真需求（及⚠️伪需求对应真需求N）前，必须让lili酱用自己的话复述且一致才确认；不一致则退回", "对应mattpocock": "—", "验证方式": "抽查：标✅前是否有lili酱复述且一致记录", "映射": "SKILL.md Phase A.3 / references/need-mining.md §3.1", "状态": "pending"},
     {"id": "AC12", "标准": "workflow复盘闭环", "说明": "提供轻量复盘、可改「别扭那一格」并写回卡片；且该动作不触发scope护栏", "对应mattpocock": "—", "验证方式": "验证复盘动作存在且护栏未被误触发", "映射": "SKILL.md Phase C/D / references/workflow-card.md §5.1", "状态": "pending"},
     {"id": "AC13", "标准": "Token效率纪律", "说明": "正文含①压缩优先②懒加载references③产物落文件④软预算≤~8轮；且user-invoked", "对应mattpocock": "小且可组合", "验证方式": "查SKILL.md四条齐备；UC14测闭环轮数达标", "映射": "SKILL.md Token效率纪律段", "状态": "pending"},
-    {"id": "AC14", "标准": "柔性入口", "说明": "可按lili酱所处阶段进入A/B/C/D(如已有PRD直进C)，不必从A走到底；任意阶段可回头补", "对应mattpocock": "小且可组合", "验证方式": "UC13验证从C进入且产出合规", "映射": "SKILL.md 入口路由", "状态": "pending"}
+    {"id": "AC14", "标准": "柔性入口", "说明": "可按lili酱所处阶段进入A/B/C/D(如已有PRD直进C)，不必从A走到底；任意阶段可回头补", "对应mattpocock": "小且可组合", "验证方式": "UC13验证从C进入且产出合规", "映射": "SKILL.md 入口路由", "状态": "pending"},
+    {"id": "AC15", "标准": "prompt信封+Mode0定界", "说明": "Mode0产出含转发给/目标/背景/约束/验收五段自包含prompt(PTCF递归)；且Mode0不接领域问答，领域澄清归base头脑风暴", "对应mattpocock": "小且可组合", "验证方式": "UC15验证信封产出+领域问答被引导回base", "映射": "SKILL.md 随问随答模式", "状态": "pending"},
+    {"id": "AC16", "标准": "复盘迭代+token-efficient", "说明": "复盘模式存在、不触发护栏；成长playbook为磁盘文件lili-coach-log.md，仅里程碑/compact/复盘时纳入；有~5次/~40行compact防膨胀", "对应mattpocock": "小且可组合", "验证方式": "UC16验证复盘落文件+日志非每轮加载+护栏未误触发", "映射": "SKILL.md 🪞复盘与迭代模式", "状态": "pending"}
   ],
   "use_cases": [
     {"id": "UC1", "场景": "模糊想法→PRD", "输入": "我想做个练日语的东西", "期望行为": "走挖掘→PTCF PRD(日语助手)→workflow→感知提效，全程不要求她写长文", "对应AC": "AC2,3,4,6,7", "状态": "pending"},
@@ -34,6 +36,8 @@
     {"id": "UC11", "场景": "复盘不触发护栏", "输入": "里程碑1后lili酱：这格别扭想改", "期望行为": "改对应格写回卡片，未误触发scope护栏", "对应AC": "AC12", "状态": "pending"},
     {"id": "UC12", "场景": "随问随答卡点陪练", "输入": "跟别的Agent聊卡住、输出不清、不知下一步", "期望行为": "查理进随问随答：命名不清→定位→拟PTCF澄清问句→教套路；不强行走闭环", "对应AC": "AC1,AC13", "状态": "pending"},
     {"id": "UC13", "场景": "柔性入口(从C进)", "输入": "PRD写好了，帮我拆workflow", "期望行为": "直接进Phase C产出workflow卡，未强制回A", "对应AC": "AC14", "状态": "pending"},
-    {"id": "UC14", "场景": "Token纪律验证", "输入": "跑一次完整MVP闭环", "期望行为": "产物落文件、每轮有压缩回顾、references仅载当前页、总轮数≤~8", "对应AC": "AC13", "状态": "pending"}
+    {"id": "UC14", "场景": "Token纪律验证", "输入": "跑一次完整MVP闭环", "期望行为": "产物落文件、每轮有压缩回顾、references仅载当前页、总轮数≤~8", "对应AC": "AC13", "状态": "pending"},
+    {"id": "UC15", "场景": "prompt信封", "输入": "跟某Agent卡住：帮我写段能发它的", "期望行为": "产出五段自包含prompt+转发说明；领域问题引导回base", "对应AC": "AC15", "状态": "pending"},
+    {"id": "UC16", "场景": "复盘不爆context", "输入": "里程碑后：帮我想想这次顺不顺", "期望行为": "进复盘、三问、结论落lili-coach-log.md、未误触发护栏、日志未每轮内联", "对应AC": "AC16,AC12", "状态": "pending"}
   ]
 }

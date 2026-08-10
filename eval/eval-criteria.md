@@ -23,6 +23,8 @@
 | **AC12** workflow 复盘闭环 | 提供轻量复盘、可改「别扭那一格」并写回卡片；且该动作**不触发** scope 护栏 | — | 验证复盘动作存在且护栏未被误触发 |
 | **AC13** Token 效率纪律 | 方法论正文含 ①压缩优先（每轮一句话回顾产物状态、指向文件）②懒加载 references（只载当前阶段一页）③产物落文件（读文件非内联草稿）④软预算（闭环 ≤~8 轮）；且保持 user-invoked | 小且可组合 | 查 SKILL.md 正文四条齐备；UC14 测闭环轮数达标 |
 | **AC14** 柔性入口 | 可按 lili酱 所处阶段进入 A/B/C/D（如已有 PRD 直进 C），不必从 A 走到底；任意阶段可回头补 | 小且可组合 | UC13 验证从 C 进入且产出合规 |
+| **AC15** prompt 信封 + Mode 0 定界 | Mode 0 产出含 转发给/目标/背景/约束/验收 五段自包含 prompt（PTCF 递归）；且 Mode 0 不接领域问答，领域澄清归 base 头脑风暴 | 小且可组合（限范围） | UC15 验证信封产出 + 领域问答被引导回 base |
+| **AC16** 复盘迭代 + token-efficient | 复盘模式存在、不触发护栏；成长 playbook 为磁盘文件 `lili-coach-log.md`，仅里程碑/compact/复盘时纳入；有 ~5 次/~40 行 compact 防膨胀 | 小且可组合 | UC16 验证复盘落文件 + 日志非每轮加载 + 护栏未误触发 |
 
 ---
 
@@ -44,6 +46,8 @@
 | **UC12** 随问随答卡点陪练 | 跟别的 Agent 聊卡住、输出不清、不知下一步 | 查理进随问随答模式：命名不清→定位→拟 PTCF 澄清问句→教套路；不强行走闭环 | AC1, AC13 |
 | **UC13** 柔性入口（从 C 进） | 「PRD 写好了，帮我拆 workflow」 | 直接进 Phase C，产出 workflow 卡，未强制回 A | AC14 |
 | **UC14** Token 纪律验证 | 跑一次完整 MVP 闭环 | 产物落文件、每轮有压缩回顾、references 仅载当前页、总轮数 ≤~8 | AC13 |
+| **UC15** prompt 信封 | 跟某 Agent 卡住：「帮我写段能发它的」 | 产出五段自包含 prompt + 转发说明；领域问题引导回 base | AC15 |
+| **UC16** 复盘不爆 context | 里程碑后「帮我想想这次顺不顺」 | 进复盘、三问、结论落 `lili-coach-log.md`、未误触发护栏、日志未每轮内联 | AC16, AC12 |
 
 ---
 
@@ -52,11 +56,11 @@
 - **小且可组合**：本 skill 只做「需求→PRD→workflow + 协作卡点陪练」一件事（AC1），并用 scope 护栏限范围（AC5）、MVP 优先减少决策分散，不抢实现类 skill 的活。
 - **调用模型**：`SKILL.md` 设 `disable-model-invocation: true`；`agents/openai.yaml` 设 `policy.allow_implicit_invocation: false`——均为 user-invoked，agent 不擅自触发（也直接省 token，见 AC13）。
 - **文档中立**：`references/*` 与本文档用中立第三人称；唯独 skill 对 lili酱 的语气温暖、鼓励，是有意区分（≠ 重复风格规则）。
-- **版本同步**：`SKILL.md` 与 `openai.yaml` 含同一 `version: 2.0.0`，改一处需同步另一处（AC8 的同步检查）。Hermes 同为 agentskills.io 格式、复用同一 `SKILL.md` 正文，故三 harness 方法论一致。
+- **版本同步**：`SKILL.md` 与 `openai.yaml` 含同一 `version: 2.1.0`，改一处需同步另一处（AC8 的同步检查）。Hermes 同为 agentskills.io 格式、复用同一 `SKILL.md` 正文，故三 harness 方法论一致。
 
 ---
 
 ## 四、通过门槛
 
-- 全部 AC1–AC14 在 UC1–UC14 下验证通过 → 技能达到「可交付 lili酱 用」标准。
+- 全部 AC1–AC16 在 UC1–UC16 下验证通过 → 技能达到「可交付 lili酱 用」标准。
 - 任一 AC 未过 → 回到对应 Phase 修订，不发布。
