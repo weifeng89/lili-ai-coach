@@ -1,41 +1,35 @@
 type,id,title,detail,mattpocock,check,mapping,status
-AC,AC1,触发精准,仅在AI协作/需求模糊/写PRD/workflow设计/协作卡点答疑类触发；不对闲聊或纯已实现技术任务误触发,小且可组合,喂12条混合输入(含卡点疑问)，误触发率=0,SKILL.md description,pending
-AC,AC2,初学者友好挖掘,每轮3-5个问题，每个都带agent推荐选项；并用跨轮pattern识别真/伪需求；不要求lili酱自由写需求,小且可组合,抽一轮对话，数问题数3-5且每问有推荐；查pattern标伪需求,SKILL.md Phase A.1 / references/need-mining.md §6,pending
-AC,AC3,真伪需求,对lili酱提出的每个需求，至少1次「做到X解决什么」反向追问，并标真/伪/待验证,—,检查对话是否对每个W有追问记录,SKILL.md Phase A.3 / references/need-mining.md §3,pending
-AC,AC4,PTCF完整,产出PRD严格含P/T/C/F四段；完整度检查对空白段输出缺口，不编造,—,缺任一段时检查输出含缺口清单且无编造,SKILL.md Phase B / references/prd-template.md,pending
-AC,AC5,scope护栏+MVP,里程碑1锁定后拒绝开新分支/加功能；新点子/装饰进backlog；默认最小可跑版，减少lili酱决策分散,小且可组合,里程碑1中抛新功能/装饰，验证被接住进backlog且未展开,SKILL.md Phase D.2,pending
-AC,AC6,workflow显性化,必产1张卡，且显式标触发/步骤/决策/产出/回流(🛠工具字段可选),—,检查产出含五段结构标注,SKILL.md Phase C / references/workflow-card.md,pending
-AC,AC7,感知提效,收口引导lili酱说出「AI省了哪几步」并记录,—,检查收口轮有该提问+lili酱原话记录,SKILL.md Phase D.1,pending
-AC,AC8,跨harness一致,"同输入在Codex(openai.yaml)、WorkBuddy与Hermes(均读SKILL.md,agentskills.io)下结构/口径一致",版本同步,同输入跑三harness，diff方法论正文一致,SKILL.md == agents/openai.yaml,pending
-AC,AC9,零重叠,skill不重复个性化prompt的沟通风格规则；仅补方法论,文档中立,文本扫描确认无风格规则重复,SKILL.md 边界声明,pending
-AC,AC10,无外部依赖,不要求API key/翻墙/第三方；纯prompt+本地文件,小且可组合,检查无任何外部调用/密钥要求,全包,pending
-AC,AC11,真需求复述确认,标✅真需求（及⚠️伪需求对应真需求N）前，必须让lili酱用自己的话复述且一致才确认；不一致则退回,—,抽查：标✅前是否有lili酱复述且一致记录,SKILL.md Phase A.3 / references/need-mining.md §3.1,pending
-AC,AC12,workflow复盘闭环,提供轻量复盘、可改「别扭那一格」并写回卡片；且该动作不触发scope护栏,—,验证复盘动作存在且护栏未被误触发,SKILL.md Phase C/D / references/workflow-card.md §5.1,pending
-AC,AC13,Token效率纪律,正文含①压缩优先②懒加载references③产物落文件④软预算≤~8轮；自动触发下仍靠懒加载/落文件/软预算控上下文,小且可组合,查SKILL.md四条齐备；UC14测闭环轮数达标,SKILL.md 🪫Token效率纪律段+🚦自动入口路由,pending
-AC,AC14,柔性入口,可按lili酱所处阶段进入A/B/C/D(如已有PRD直进C)，不必从A走到底；任意阶段可回头补,小且可组合,UC13验证从C进入且产出合规,SKILL.md 🚦自动入口路由,pending
-AC,AC15,prompt信封+Mode0定界,Mode0产出含转发给/目标/背景/约束/验收五段自包含prompt(PTCF递归)；且Mode0不接领域问答，领域澄清归base头脑风暴,小且可组合,UC15验证信封产出+领域问答被引导回base,SKILL.md 随问随答模式,pending
-AC,AC16,复盘迭代+token-efficient,复盘模式存在、不触发护栏；成长playbook为磁盘文件lili-coach-log.md，仅里程碑/compact/复盘时纳入；有~5次/~40行compact防膨胀,小且可组合,UC16验证复盘落文件+日志非每轮加载+护栏未误触发,SKILL.md 🪞复盘与迭代模式,pending
-AC,AC17,零安装感知,lili酱端零文件/目录/命令行操作；安装由install脚本(或npx add-skill)一次性完成；脚本仅拷白名单(SKILL.md+references/+Codex openai.yaml)、不拷eval/examples、校验版本、保留本地lili-coach-log.md不被覆盖,小且可组合(降低门槛),UC17在临时目录模拟跑install，验证落盘路径正确、黑名单未拷、log保留、版本一致,install.py/install.sh + README安装规范,pending
-AC,AC18,术语零暴露,面向lili酱的所有输出无内部术语(PTCF/harness/Mode0/AC/UC/懒加载/Token预算/frontmatter/user-invoked等)，方法论均按转译表说人话,文档中立(用户视角),UC18扫描典型输出样本无内部词；抽查转译表命中,SKILL.md 🗣用户交互强制规范+术语转译表,pending
-AC,AC19,Token诊断能力,具备用户侧对话浪费定位(≤3类)+指令压缩+每次1条省事技巧；明确自身读不到真实token数(模式级诊断，不谎称读表),小且可组合(帮用户),UC19喂一段冗长对话，验证产出浪费点+压缩版+技巧,SKILL.md 🔋Token优化能力 + references/token-optimize.md,pending
-AC,AC20,自动复盘落盘,每次服务结束静默写一笔到账本(问题/方法/价值)；分层复盘(微型+里程碑每5笔或主动)；每~5笔/~40行compact归档防膨胀,小且可组合,UC20验证自动记账发生、分层复盘触发、归档不爆上下文,SKILL.md 🪞复盘与迭代模式 + references/review-template.md,pending
-UC,UC1,模糊想法→PRD,我想做个练日语的东西,"AC2,3,4,6,7",走挖掘→PTCF PRD(日语助手)→workflow→感知提效，全程不要求她写长文,,pending
-UC,UC2,真伪识别,我要个超酷数据大屏,AC3,追问发现真需求是每日看学习时长→标⚠️伪需求+最小替代,,pending
-UC,UC3,完整度拦截,PRD缺C(约束)/F(验收),AC4,输出缺口清单，要求补，不硬出最终版,,pending
-UC,UC4,scope护栏,里程碑1进行中：顺便加个社区功能,AC5,进backlog，不展开新分支,,pending
-UC,UC5,workflow拆解,lili酱：workflow是啥？,AC6,把日语听写拆成触发→录音→AI纠错→高亮→复习，并指出「这就是workflow结构」,,pending
-UC,UC6,跨harness,同需求分别喂Codex/WorkBuddy/Hermes,AC8,三处产出结构/口径一致,,pending
-UC,UC7,边界-只吐槽,AI又笨了,AC1,进随问随答模式，引导说具体场景，不急着挖需求/评估,,pending
-UC,UC8,中断续接,lili酱中途离开→回来,—,从断点继续，不重来,,pending
-UC,UC9,重叠校验,扫描skill全文,AC9,不含个性化prompt已有风格规则（仅引用其存在）,,pending
-UC,UC10,复述确认防盲从,lili酱复述跑偏（如把看进度说成炫页面）,AC11,agent退回追问、不标✅，指出差异重新对齐,,pending
-UC,UC11,复盘不触发护栏,里程碑1后lili酱：这格别扭想改,AC12,改对应格写回卡片，未误触发scope护栏,,pending
-UC,UC12,随问随答卡点陪练,跟别的Agent聊卡住、输出不清、不知下一步,"AC1,AC13",查理进随问随答：命名不清→定位→拟PTCF澄清问句→教套路；不强行走闭环,,pending
-UC,UC13,柔性入口(从C进),PRD写好了，帮我拆workflow,AC14,直接进Phase C产出workflow卡，未强制回A,,pending
-UC,UC14,Token纪律验证,跑一次完整MVP闭环,AC13,产物落文件、每轮有压缩回顾、references仅载当前页、总轮数≤~8,,pending
-UC,UC15,prompt信封,跟某Agent卡住：帮我写段能发它的,AC15,产出五段自包含prompt+转发说明；领域问题引导回base,,pending
-UC,UC16,复盘不爆context,里程碑后：帮我想想这次顺不顺,"AC16,AC12",进复盘、三问、结论落lili-coach-log.md、未误触发护栏、日志未每轮内联,,pending
-UC,UC17,零安装感知,开发者在lili环境跑 python3 install.py,AC17,脚本落盘到正确skills目录、仅白名单、不拷eval/examples、保留已有log、版本校验通过,,pending
-UC,UC18,术语零暴露,查理给lili的一段回复样本,AC18,无内部术语，PRD/workflow等均以「项目四件套/落地步骤清单」等说人话,,pending
-UC,UC19,Token诊断,lili：跟那个Agent聊久了变卡，对话太长,AC19,查理定位≤3个浪费点+给压缩版指令+教1条技巧，且不谎称读到真实token,,pending
-UC,UC20,自动复盘落盘,lili：搞定了，这个做完了,"AC20,AC12",查理静默记一笔到账本、累计5笔触发里程碑复盘、归档不爆上下文、未误触发scope护栏,,pending
+AC,AC1,需求挖掘,每轮3-5问(每问≤2候选)；跨轮pattern标真/伪/待验证；每需求≥1次反向追问；标✅前需lili酱复述一致否则退回,小且可组合,抽一轮数3-5且有候选；查pattern标伪；查标✅前有复述一致,SKILL.md Phase A / references/need-mining.md,pending
+AC,AC2,PTCF项目四件套,PRD严格含P/T/C/F四段；空白段出缺口不编造；默认MVP优先,—,缺段时输出缺口清单且无编造,SKILL.md Phase B / references/prd-template.md,pending
+AC,AC3,workflow卡,必产1张卡，显式标触发/步骤/决策/产出/回流(🛠可选),—,检查产出含五段结构标注,SKILL.md Phase C / references/workflow-card.md,pending
+AC,AC4,随问随答/prompt信封,Mode0产出五段自包含prompt(转发给/目标/背景/约束/验收)；不接领域问答，领域归base,小且可组合,UC15验证信封产出+领域引导回base,SKILL.md 随问随答模式,pending
+AC,AC5,自动路由+柔性分流,仅AI协作类触发不误触发；可按阶段进A/B/C/D；切入时轻量身份提示(首次报我是查理👋不每轮刷)；纯领域问题翻成精准指令交base不生硬拒答,小且可组合,喂12条误触发率=0；UC13从C进；查身份提示；UC15领域翻信封,SKILL.md 🚦自动入口路由,pending
+AC,AC6,复盘落盘,轻量复盘可改格写回不触发护栏；playbook磁盘lili-coach-log.md仅复盘读入；微型自动记账(问题/方法/价值)；里程碑每5笔/主动；~5笔/~40行compact归档,小且可组合,UC16/UC20验证落文件+自动记账+分层+归档不爆+护栏未误触,SKILL.md 🪞复盘与迭代模式 + references/review-template.md,pending
+AC,AC7,Token优化,自纪律(压缩优先/懒加载/产物落文件/软预算≤8轮)+用户侧诊断(≤3浪费点+指令压缩+1技巧，模式级不谎称读表),小且可组合(帮用户),UC14测轮数；UC19喂冗长对话验证产出+不谎称读表,SKILL.md 🔋Token优化能力+🪫Token纪律 + references/token-optimize.md,pending
+AC,AC8,零安装感知,lili零操作；install脚本/npx一次性；仅白名单(SKILL.md+references/+Codex openai.yaml)、不拷eval/examples、校验版本、保留本地lili-coach-log.md不被覆盖,小且可组合(降门槛),UC17模拟跑install验证落盘/黑名单/log保留/版本,install.py/install.sh + README安装规范,pending
+AC,AC9,术语零暴露,面向lili输出无内部术语(PTCF/harness/Mode0/AC/UC/懒加载/Token预算/frontmatter/user-invoked等)，方法论按转译表说人话,文档中立(用户视角),UC18扫描样本无内部词；抽查转译表命中,SKILL.md 🗣用户交互强制规范+术语转译表,pending
+AC,AC10,scope护栏+感知提效,里程碑1锁定拒开新分支；新点子/装饰进backlog；默认最小可跑版；收口引导说出「省了哪几步」并记录,小且可组合(限范围),UC4进backlog不展开；UC1收口有提问+原话,SKILL.md Phase D,pending
+AC,AC11,跨harness一致,SKILL.md==openai.yaml逐字符；三harness口径一致,版本同步,同输入跑三harness diff正文一致,SKILL.md == agents/openai.yaml,pending
+AC,AC12,零重叠,不重复个性化prompt风格规则，仅补方法论,文档中立,文本扫描无风格规则重复,SKILL.md 边界声明,pending
+AC,AC13,无外部依赖,不要求API key/翻墙/第三方；纯prompt+本地文件,小且可组合,检查无任何外部调用/密钥,全包,pending
+AC,AC14,小且可组合定位,只干需求→PRD→workflow+卡点陪练一件事；auto-invoke口径；MVP优先不抢实现活,小且可组合,抽查description与正文不超出单一定位,SKILL.md description + 引言,pending
+UC,UC1,模糊想法→PRD,我想做个练日语的东西,"AC1,2,3,10",走挖掘→PTCF四件套(日语助手)→workflow→感知提效，不要求写长文,,pending
+UC,UC2,真伪识别,我要个超酷数据大屏,AC1,追问发现真需求是每日看学习时长→标⚠️伪需求+最小替代,,pending
+UC,UC3,完整度拦截,PRD缺C(约束)/F(验收),AC2,输出缺口清单要求补不硬出最终版,,pending
+UC,UC4,scope护栏,里程碑1进行中：顺便加个社区功能,AC10,进backlog不展开新分支,,pending
+UC,UC5,workflow拆解,lili酱：workflow是啥？,AC3,把日语听写拆成触发→录音→AI纠错→高亮→复习并指出结构,,pending
+UC,UC6,跨harness,同需求分别喂Codex/WorkBuddy/Hermes,AC11,三处产出结构/口径一致,,pending
+UC,UC7,边界-只吐槽,AI又笨了,AC5,引导说具体场景不急着挖需求；切入报身份,,pending
+UC,UC8,中断续接,lili酱中途离开→回来,—,从断点继续不重来,,pending
+UC,UC9,重叠校验,扫描skill全文,AC12,不含个性化prompt已有风格规则(仅引用其存在),,pending
+UC,UC10,复述确认防盲从,lili酱复述跑偏(看进度说成炫页面),AC1,agent退回追问不标✅指出差异重新对齐,,pending
+UC,UC11,复盘不触发护栏,里程碑1后：这格别扭想改,AC6,改对应格写回卡片未误触发scope护栏,,pending
+UC,UC12,随问随答卡点陪练,跟别的Agent聊卡住输出不清不知下一步,"AC5,AC7",进随问随答命名不清→定位→拟PTCF澄清问句→教套路；报身份,,pending
+UC,UC13,柔性入口(从C进),PRD写好了帮我拆workflow,AC5,直接进Phase C产出workflow卡未强制回A,,pending
+UC,UC14,Token纪律验证,跑一次完整MVP闭环,AC7,产物落文件、每轮压缩回顾、references仅载当前页、总轮数≤~8,,pending
+UC,UC15,prompt信封,跟某Agent卡住：帮我写段能发它的,AC4,产出五段自包含prompt+转发说明；领域问题引导回base,,pending
+UC,UC16,复盘不爆context,里程碑后：帮我想想这次顺不顺,"AC6,AC12",进复盘三问结论落lili-coach-log.md未误触发护栏日志未每轮内联,,pending
+UC,UC17,零安装感知,开发者跑 python3 install.py,AC8,落盘正确目录仅白名单不拷eval/examples保留log版本校验通过,,pending
+UC,UC18,术语零暴露,查理给lili的一段回复样本,AC9,无内部术语PRD/workflow以项目四件套/落地步骤清单说人话,,pending
+UC,UC19,Token诊断,lili：跟那个Agent聊久了变卡对话太长,AC7,定位≤3浪费点+压缩版指令+教1技巧且不谎称读到真实token,,pending
+UC,UC20,自动复盘落盘,lili：搞定了这个做完了,"AC6,AC12",静默记一笔到账本累计5笔触发里程碑复盘归档不爆未误触scope护栏,,pending
