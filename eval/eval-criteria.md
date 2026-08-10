@@ -1,7 +1,7 @@
 # 验收标准与用例（lili-ai-coach）
 
 > 给初学者（agentic beginner）用的 skill 验收，参考 [mattpocock/skills](https://github.com/mattpocock/skills) 的质量杆，但改为「非技术初学者」口径。
-> mattpocock 的质量杆：**小且可组合**、**调用模型清晰（user-invoked，禁模型自触发）**、**文档中立第三人称**、**版本同步**。本文件把这些都落到 lili酱 场景。
+> mattpocock 的质量杆：**小且可组合**、**调用模型（auto-invoke，精准 description 防误触发）**、**文档中立第三人称**、**版本同步**。本文件把这些都落到 lili酱 场景。
 
 ---
 
@@ -21,10 +21,14 @@
 | **AC10** 无外部依赖 | 不要求 API key / 翻墙 / 第三方；纯 prompt + 本地文件 | 小且可组合 | 检查无任何外部调用/密钥要求 |
 | **AC11** 真需求复述确认 | 标 ✅ 真需求（及 ⚠️ 伪需求对应真需求 N）**前**，必须让 lili酱 用自己的话复述且一致才确认；不一致则退回追问 | — | 抽查：标 ✅ 前是否有 lili酱 复述且一致记录 |
 | **AC12** workflow 复盘闭环 | 提供轻量复盘、可改「别扭那一格」并写回卡片；且该动作**不触发** scope 护栏 | — | 验证复盘动作存在且护栏未被误触发 |
-| **AC13** Token 效率纪律 | 方法论正文含 ①压缩优先（每轮一句话回顾产物状态、指向文件）②懒加载 references（只载当前阶段一页）③产物落文件（读文件非内联草稿）④软预算（闭环 ≤~8 轮）；且保持 user-invoked | 小且可组合 | 查 SKILL.md 正文四条齐备；UC14 测闭环轮数达标 |
+| **AC13** Token 效率纪律 | 方法论正文含 ①压缩优先（每轮一句话回顾产物状态、指向文件）②懒加载 references（只载当前阶段一页）③产物落文件（读文件非内联草稿）④软预算（闭环 ≤~8 轮）；自动触发下仍靠懒加载/落文件/软预算控上下文，不因自动触发就每轮全量加载 | 小且可组合 | 查 SKILL.md 正文四条齐备 + 🚦 自动入口路由；UC14 测闭环轮数达标 |
 | **AC14** 柔性入口 | 可按 lili酱 所处阶段进入 A/B/C/D（如已有 PRD 直进 C），不必从 A 走到底；任意阶段可回头补 | 小且可组合 | UC13 验证从 C 进入且产出合规 |
 | **AC15** prompt 信封 + Mode 0 定界 | Mode 0 产出含 转发给/目标/背景/约束/验收 五段自包含 prompt（PTCF 递归）；且 Mode 0 不接领域问答，领域澄清归 base 头脑风暴 | 小且可组合（限范围） | UC15 验证信封产出 + 领域问答被引导回 base |
 | **AC16** 复盘迭代 + token-efficient | 复盘模式存在、不触发护栏；成长 playbook 为磁盘文件 `lili-coach-log.md`，仅里程碑/compact/复盘时纳入；有 ~5 次/~40 行 compact 防膨胀 | 小且可组合 | UC16 验证复盘落文件 + 日志非每轮加载 + 护栏未误触发 |
+| **AC17** 零安装感知 | lili酱 端零文件/目录/命令行操作；安装由 install 脚本（或 `npx add-skill`）一次性完成；脚本仅拷白名单（SKILL.md+references/+Codex openai.yaml）、不拷 eval/examples、校验版本、保留本地 `lili-coach-log.md` 不被覆盖 | 小且可组合（降低门槛） | UC17 在临时目录模拟跑 install，验证落盘路径正确、黑名单未拷、log 保留、版本一致 |
+| **AC18** 术语零暴露 | 面向 lili酱 的所有输出无内部术语（PTCF/harness/Mode 0/AC/UC/懒加载/Token 预算/frontmatter/user-invoked 等），方法论均按转译表说人话 | 文档中立（用户视角） | UC18 扫描典型输出样本无内部词；抽查转译表命中 |
+| **AC19** Token 诊断能力 | 具备用户侧对话浪费定位（≤3 类）+ 指令压缩 + 每次 1 条省事技巧；明确自身读不到真实 token 数（模式级诊断，不谎称读表） | 小且可组合（帮用户） | UC19 喂一段冗长对话，验证产出浪费点+压缩版+技巧 |
+| **AC20** 自动复盘落盘 | 每次服务结束静默写一笔到账本（问题/方法/价值）；分层复盘（微型+里程碑每5笔或主动）；每~5笔/~40行 compact 归档防膨胀 | 小且可组合 | UC20 验证自动记账发生、分层复盘触发、归档不爆上下文 |
 
 ---
 
@@ -48,13 +52,17 @@
 | **UC14** Token 纪律验证 | 跑一次完整 MVP 闭环 | 产物落文件、每轮有压缩回顾、references 仅载当前页、总轮数 ≤~8 | AC13 |
 | **UC15** prompt 信封 | 跟某 Agent 卡住：「帮我写段能发它的」 | 产出五段自包含 prompt + 转发说明；领域问题引导回 base | AC15 |
 | **UC16** 复盘不爆 context | 里程碑后「帮我想想这次顺不顺」 | 进复盘、三问、结论落 `lili-coach-log.md`、未误触发护栏、日志未每轮内联 | AC16, AC12 |
+| **UC17** 零安装感知 | 开发者在 lili 环境跑 `python3 install.py` | 脚本落盘到正确 skills 目录、仅白名单、不拷 eval/examples、保留已有 log、版本校验通过 | AC17 |
+| **UC18** 术语零暴露 | 查理给 lili 的一段回复样本 | 无内部术语，PRD/workflow 等均以「项目四件套/落地步骤清单」等说人话 | AC18 |
+| **UC19** Token 诊断 | lili：「跟那个 Agent 聊久了变卡，对话太长」 | 查理定位≤3个浪费点+给压缩版指令+教1条技巧，且不谎称读到真实 token | AC19 |
+| **UC20** 自动复盘落盘 | lili：「搞定了，这个做完了」 | 查理静默记一笔到账本、累计5笔触发里程碑复盘、归档不爆上下文、未误触发 scope 护栏 | AC20, AC12 |
 
 ---
 
 ## 三、与 mattpocock 标准的映射说明
 
 - **小且可组合**：本 skill 只做「需求→PRD→workflow + 协作卡点陪练」一件事（AC1），并用 scope 护栏限范围（AC5）、MVP 优先减少决策分散，不抢实现类 skill 的活。
-- **调用模型**：`SKILL.md` 设 `disable-model-invocation: true`；`agents/openai.yaml` 设 `policy.allow_implicit_invocation: false`——均为 user-invoked，agent 不擅自触发（也直接省 token，见 AC13）。
+- **调用模型**：`SKILL.md` 设 `disable-model-invocation: false`；`agents/openai.yaml` 设 `policy.allow_implicit_invocation: true`——均为**自动触发（auto-invoke）**，靠 `description` 精准语义匹配切入、不对闲聊误触发（见 AC1）。token 节省改由懒加载/产物落文件/软预算实现（见 AC13），不再依赖 user-invoked。
 - **文档中立**：`references/*` 与本文档用中立第三人称；唯独 skill 对 lili酱 的语气温暖、鼓励，是有意区分（≠ 重复风格规则）。
 - **版本同步**：`SKILL.md` 与 `openai.yaml` 含同一 `version: 2.1.0`，改一处需同步另一处（AC8 的同步检查）。Hermes 同为 agentskills.io 格式、复用同一 `SKILL.md` 正文，故三 harness 方法论一致。
 
@@ -62,5 +70,5 @@
 
 ## 四、通过门槛
 
-- 全部 AC1–AC16 在 UC1–UC16 下验证通过 → 技能达到「可交付 lili酱 用」标准。
+- 全部 AC1–AC20 在 UC1–UC20 下验证通过 → 技能达到「可交付 lili酱 用」标准。
 - 任一 AC 未过 → 回到对应 Phase 修订，不发布。
